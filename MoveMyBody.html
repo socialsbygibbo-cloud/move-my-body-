@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Move My Body 💪</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --pink: #FF6B9D;
+    --orange: #FF8C42;
+    --purple: #9B59B6;
+    --blue: #6C8EBF;
+    --green: #4CAF82;
+    --cream: #F5E6D3;
+    --bg: #160A1C;
+    --surface: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.11);
+  }
+  html, body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1A0A1E 0%, #2D0A24 45%, #1A1208 100%);
+    background-attachment: fixed;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::-webkit-scrollbar { width: 0; }
+
+  .app { max-width: 480px; margin: 0 auto; padding: 0 18px 80px; }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 26px 0 18px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo {
+    font-size: 21px; font-weight: 900; letter-spacing: -0.5px;
+    background: linear-gradient(90deg, var(--pink), var(--orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tagline { color: rgba(245,230,211,0.45); font-size: 11px; font-weight: 500; margin-top: 2px; }
+  .streak-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,140,66,0.14);
+    border: 1.5px solid rgba(255,140,66,0.3);
+    border-radius: 20px; padding: 6px 14px;
+    font-weight: 700; font-size: 14px; color: var(--orange);
+    white-space: nowrap;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 26px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 18px; padding: 4px;
+  }
+  .tab {
+    flex: 1; padding: 10px; border-radius: 14px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: rgba(245,230,211,0.4); font-weight: 500; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .tab.active {
+    background: rgba(255,107,157,0.14);
+    border-color: rgba(255,107,157,0.35);
+    color: var(--pink); font-weight: 700;
+  }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 26px; }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; }
+  .section-label { font-size: 15px; font-weight: 800; }
+  .section-hint { font-size: 11px; color: rgba(245,230,211,0.3); font-weight: 500; }
+
+  /* ── PILLS ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 9px; }
+  .pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 11px 18px; border-radius: 50px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: rgba(245,230,211,0.8); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
+    font-family: inherit; white-space: nowrap;
+    user-select: none;
+  }
+  .pill.selected {
+    color: #fff; font-weight: 700;
+    transform: scale(1.07);
+  }
+
+  /* ── CTA BUTTONS ── */
+  .btn-main {
+    width: 100%; padding: 21px;
+    border: none; border-radius: 20px;
+    font-size: 19px; font-weight: 900; letter-spacing: 0.2px;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+    color: rgba(245,230,211,0.25);
+    background: rgba(255,255,255,0.06);
+  }
+  .btn-main.ready {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: #fff;
+    box-shadow: 0 8px 30px rgba(255,107,157,0.4);
+  }
+  .btn-main.ready:active { transform: scale(0.97); }
+  .btn-secondary {
+    width: 100%; padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid var(--border);
+    border-radius: 17px; font-size: 14px; font-weight: 700;
+    color: rgba(245,230,211,0.65); cursor: pointer;
+    transition: all 0.18s; font-family: inherit; margin-top: 11px;
+  }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  /* ── WORKOUT CARD ── */
+  .card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+    border-radius: 28px; padding: 24px 20px;
+    border: 1.5px solid var(--border);
+  }
+  .card-tag {
+    display: inline-block;
+    border-radius: 20px; padding: 4px 13px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
+    margin-bottom: 14px;
+  }
+  .card-title { font-size: 24px; font-weight: 900; letter-spacing: -0.4px; line-height: 1.2; margin-bottom: 3px; }
+  .card-subtitle { font-size: 13px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 20px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: rgba(245,230,211,0.4); font-weight: 600; margin-bottom: 6px; }
+  .progress-track { height: 5px; border-radius: 10px; background: rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 18px; }
+  .progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--pink), var(--orange)); transition: width 0.3s ease; }
+
+  /* ── MOVE LIST ── */
+  .move-list { margin-bottom: 18px; }
+  .move-row {
+    display: flex; align-items: flex-start; gap: 13px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer; user-select: none;
+    background: none; border-left: none; border-right: none; border-top: none;
+    width: 100%; text-align: left; font-family: inherit;
+  }
+  .move-row:last-child { border-bottom: none; }
+  .move-check {
+    width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0; margin-top: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-size: 13px;
+  }
+  .move-check.done {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    border: none; box-shadow: 0 2px 10px rgba(255,107,157,0.4);
+    color: #fff;
+  }
+  .move-name {
+    font-size: 15px; font-weight: 600; color: #fff;
+    line-height: 1.35; transition: all 0.2s;
+  }
+  .move-name.done { color: rgba(245,230,211,0.35); text-decoration: line-through; }
+  .move-reps {
+    display: inline-block; margin-left: 8px;
+    font-size: 11px; font-weight: 700;
+    background: rgba(255,107,157,0.18);
+    border: 1px solid rgba(255,107,157,0.3);
+    border-radius: 8px; padding: 2px 8px;
+    color: var(--pink); vertical-align: middle;
+  }
+  .move-note { font-size: 12px; color: rgba(245,230,211,0.38); margin-top: 3px; font-style: italic; }
+
+  /* ── YT BUTTON ── */
+  .yt-btn {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; padding: 13px;
+    color: rgba(245,230,211,0.6); font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+    font-family: inherit; margin-bottom: 18px;
+    transition: background 0.18s;
+  }
+  .yt-btn:hover { background: rgba(255,255,255,0.09); }
+  .yt-embed { border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; margin-bottom: 18px; }
+  .yt-embed iframe { display: block; width: 100%; height: 100%; border: none; }
+
+  /* ── LOG BUTTON ── */
+  .btn-log {
+    flex: 1; padding: 17px;
+    border: none; border-radius: 16px;
+    font-size: 15px; font-weight: 800;
+    font-family: inherit; cursor: default;
+    transition: all 0.25s; letter-spacing: 0.2px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(245,230,211,0.35);
+    border: 1.5px solid rgba(255,255,255,0.1);
+  }
+  .btn-log.ready {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: #fff; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(255,107,157,0.4);
+    border: none;
+  }
+  .btn-log.ready:active { transform: scale(0.97); }
+  .btn-fave {
+    padding: 17px 18px;
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid var(--border);
+    border-radius: 16px; font-size: 19px;
+    cursor: pointer; transition: all 0.18s; font-family: inherit;
+  }
+  .btn-fave.active {
+    background: rgba(255,107,157,0.18);
+    border-color: var(--pink);
+  }
+  .card-actions { display: flex; gap: 10px; }
+
+  /* ── BACK LINK ── */
+  .back-btn {
+    background: none; border: none; color: var(--pink);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    padding: 0 0 18px; display: flex; align-items: center;
+    gap: 5px; font-family: inherit;
+  }
+
+  /* ── CELEBRATION ── */
+  .celebration { text-align: center; padding: 36px 16px; }
+  .celebration-emoji { font-size: 60px; margin-bottom: 14px; }
+  .celebration-title {
+    font-size: 26px; font-weight: 900;
+    background: linear-gradient(90deg, var(--pink), var(--orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .celebration-streak { color: var(--orange); font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .celebration-note { color: rgba(245,230,211,0.4); font-size: 13px; line-height: 1.6; margin-bottom: 28px; }
+  .btn-again {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    border: none; border-radius: 16px; padding: 15px 30px;
+    color: #fff; font-weight: 800; font-size: 15px;
+    cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 22px rgba(255,107,157,0.4);
+  }
+
+  /* ── FAVES ── */
+  .fave-list { display: flex; flex-direction: column; gap: 12px; }
+  .fave-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px; padding: 15px 18px;
+    border: 1.5px solid rgba(255,255,255,0.09);
+    display: flex; justify-content: space-between;
+    align-items: center; cursor: pointer;
+    transition: background 0.18s;
+  }
+  .fave-card:hover { background: rgba(255,255,255,0.08); }
+  .fave-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .fave-title { font-size: 16px; font-weight: 800; color: #fff; }
+  .fave-meta { font-size: 11px; color: rgba(245,230,211,0.35); margin-top: 3px; }
+  .fave-remove {
+    background: none; border: none; font-size: 20px;
+    cursor: pointer; padding: 4px; flex-shrink: 0;
+  }
+  .empty-state { text-align: center; padding: 56px 20px; }
+  .empty-emoji { font-size: 44px; margin-bottom: 14px; }
+  .empty-text { color: rgba(245,230,211,0.4); font-size: 14px; line-height: 1.6; }
+
+  /* ── SCREEN TRANSITIONS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: pop 0.32s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes pop {
+    0% { transform: scale(0.94); opacity: 0; }
+    65% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: #fff; font-weight: 700; font-size: 14px;
+    padding: 12px 24px; border-radius: 50px;
+    box-shadow: 0 6px 24px rgba(255,107,157,0.5);
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none; z-index: 100; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="logo">Move My Body 💪</div>
+      <div class="tagline">just tell me what to do</div>
+    </div>
+    <div class="streak-badge" id="streakBadge">🔥 <span id="streakNum">0</span> days</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="home" onclick="switchTab('home')">🏃 Move</button>
+    <button class="tab" data-tab="faves" onclick="switchTab('faves')">💖 Saved (<span id="faveCount">0</span>)</button>
+  </div>
+
+  <!-- ── HOME SCREEN ── -->
+  <div id="screen-home" class="screen active">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">How's your energy?</span>
+        <span class="section-hint">be honest 👇</span>
+      </div>
+      <div class="pills" id="pills-energy"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">Time available?</span>
+        <span class="section-hint">be realistic 🕰</span>
+      </div>
+      <div class="pills" id="pills-time"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">Where are you?</span>
+        <span class="section-hint">right now 📍</span>
+      </div>
+      <div class="pills" id="pills-location"></div>
+    </div>
+    <button class="btn-main" id="btnGo" onclick="handleGo()">Pick your options above</button>
+    <button class="btn-secondary" onclick="handleRandom()">🎲 Surprise me</button>
+  </div>
+
+  <!-- ── RESULT SCREEN ── -->
+  <div id="screen-result" class="screen">
+    <button class="back-btn" onclick="switchTab('home')">← Back</button>
+    <div id="resultArea"></div>
+  </div>
+
+  <!-- ── FAVOURITES SCREEN ── -->
+  <div id="screen-faves" class="screen">
+    <div id="favesArea"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const WORKOUTS = [
+  // DEAD + HOME
+  { id:"dead-5-home", energy:"dead", time:"5", location:"home", title:"Legs Up the Wall", subtitle:"Nervous system reset", tag:"🧘 Nervous System", color:"#9B59B6", type:"nervous", youtubeId:"5pOA6bQCNkk",
+    moves:[{n:"Lie on your back near a wall",r:null,note:"Arms relaxed by your sides"},{n:"Swing legs up the wall",r:null,note:"Hips close to the wall"},{n:"Close your eyes and breathe",r:"5 min",note:"In through nose, out through mouth"}]},
+  { id:"dead-10-home", energy:"dead", time:"10", location:"home", title:"Floor Rest + Breathe", subtitle:"Gentle body reset", tag:"🧘 Nervous System", color:"#9B59B6", type:"nervous", youtubeId:"ihO02wUzgkc",
+    moves:[{n:"Lie flat on your back",r:null,note:"Palms face up"},{n:"4-7-8 breathing",r:"5 rounds",note:"In 4, hold 7, out 8 counts"},{n:"Gentle neck rolls",r:"5 each side",note:"Ear to shoulder slowly"},{n:"Hug knees to chest",r:"Hold 1 min",note:"Rock side to side if it feels good"}]},
+  { id:"dead-20-home", energy:"dead", time:"20", location:"home", title:"Yoga Nidra", subtitle:"Lie down. Follow along.", tag:"🧘 Nervous System", color:"#9B59B6", type:"nervous", youtubeId:"M0u9GST_j3s",
+    moves:[{n:"Lie flat on your back",r:null,note:"Grab a blanket if you're cold"},{n:"Press play and follow along",r:"20 min",note:"You literally just lie there"}]},
+  { id:"dead-45-home", energy:"dead", time:"45", location:"home", title:"Restorative Yoga", subtitle:"Long holds, full rest", tag:"🧘 Nervous System", color:"#9B59B6", type:"nervous", youtubeId:"BiWDsfZ3zbo",
+    moves:[{n:"Set up pillows + blanket",r:null,note:"Get cosy before you start"},{n:"Child's pose",r:"3 min",note:"Knees wide, forehead down"},{n:"Supported bridge",r:"3 min",note:"Pillow under your lower back"},{n:"Legs up the wall",r:"5 min",note:"The classic"},{n:"Savasana",r:"Rest of the time",note:"You've earned it"}]},
+
+  // DEAD + OUTSIDE
+  { id:"dead-5-outside", energy:"dead", time:"5", location:"outside", title:"Barefoot Grounding", subtitle:"Stand. Breathe. That's the workout.", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Take your shoes off",r:null,note:"Grass, sand or dirt"},{n:"Stand still and feel the ground",r:"1 min",note:"Eyes closed if safe"},{n:"Slow walk across the grass",r:"2 min",note:"Feel every step"},{n:"Stand still + breathe deeply",r:"2 min",note:"Big belly breaths"}]},
+  { id:"dead-10-outside", energy:"dead", time:"10", location:"outside", title:"Slow Block Loop", subtitle:"No pace. Just move.", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Walk slowly around the block",r:"10 min",note:"No speed goal. Headphones optional."},{n:"Notice one thing you can see",r:null,note:"A tree, a colour, a cloud"}]},
+  { id:"dead-20-outside", energy:"dead", time:"20", location:"outside", title:"Gentle Neighbourhood Walk", subtitle:"Fresh air is doing something", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Pick a direction and walk",r:"10 min out",note:"Flat route if possible"},{n:"Turn around and walk home",r:"10 min back",note:"That's it. You did it."}]},
+  { id:"dead-45-outside", energy:"dead", time:"45", location:"outside", title:"Long Slow Walk", subtitle:"Moving meditation", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Walk at your own pace",r:"45 min",note:"Flat route, no pressure"},{n:"No phone scrolling — just look around",r:null,note:"Notice things. It helps."}]},
+
+  // DEAD + GYM
+  { id:"dead-5-gym", energy:"dead", time:"5", location:"gym", title:"Foam Roll + Breathe", subtitle:"You showed up. That's enough.", tag:"🔄 Mobility", color:"#6C8EBF", type:"mobility", youtubeId:null,
+    moves:[{n:"Foam roll upper back",r:"1 min",note:"Slow rolls, pause on tight spots"},{n:"Foam roll glutes",r:"1 min each side",note:"Figure 4 position on the roller"},{n:"Child's pose on the mat",r:"2 min",note:"Arms extended, breathe into your back"}]},
+  { id:"dead-10-gym", energy:"dead", time:"10", location:"gym", title:"Stretch & Recover", subtitle:"Take the mat. Take your time.", tag:"🌸 Stretching", color:"#FF6B9D", type:"stretch", youtubeId:"g_tea8ZNk5A",
+    moves:[{n:"Foam roll entire back",r:"2 min",note:"Top to bottom, go slow"},{n:"Hip flexor stretch",r:"90s each side",note:"Low lunge, sink hips down"},{n:"Seated hamstring stretch",r:"90s each side",note:"Long sit, reach for foot"},{n:"Thoracic rotation",r:"8 each side",note:"Knees stacked, reach arm up and over"}]},
+  { id:"dead-20-gym", energy:"dead", time:"20", location:"gym", title:"Full Stretch Session", subtitle:"All the things that always get skipped", tag:"🌸 Stretching", color:"#FF6B9D", type:"stretch", youtubeId:"g_tea8ZNk5A",
+    moves:[{n:"Foam roll — back, glutes, quads",r:"5 min total",note:"30s–1min each area"},{n:"Hip flexor lunge stretch",r:"2 min each side",note:"Front knee over ankle"},{n:"Pigeon pose",r:"2 min each side",note:"Or figure 4 on your back"},{n:"Hamstring stretch",r:"90s each side",note:"Lie on back, strap optional"},{n:"Lat stretch at the rack",r:"1 min each side",note:"Hold bar, sit back, breathe"},{n:"Child's pose",r:"2 min",note:"Final wind-down"}]},
+  { id:"dead-45-gym", energy:"dead", time:"45", location:"gym", title:"Recovery + Mobility", subtitle:"Slow work. Real results.", tag:"🔄 Mobility", color:"#6C8EBF", type:"mobility", youtubeId:null,
+    moves:[{n:"Foam roll — full body",r:"10 min",note:"Back, glutes, quads, calves"},{n:"Hip 90/90 stretch",r:"2 min each side",note:"Both knees at 90° on floor"},{n:"Couch stretch (hip flexors)",r:"2 min each side",note:"Back foot on bench behind you"},{n:"World's greatest stretch",r:"5 each side",note:"Lunge + rotate + reach"},{n:"Cat-cow on mat",r:"10 slow reps",note:"Sync with breath"},{n:"Band pull-aparts",r:"3 × 15",note:"Shoulder health"},{n:"Dead hang from bar",r:"3 × 30 sec",note:"Just hang. Decompress the spine."},{n:"Savasana",r:"5 min",note:"Eyes closed. Done."}]},
+
+  // LOW + HOME
+  { id:"low-5-home", energy:"low", time:"5", location:"home", title:"Quick Morning Shake-Out", subtitle:"Shake the sleep off", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Neck rolls",r:"5 each side",note:"Ear to shoulder, slow"},{n:"Shoulder rolls",r:"10 forward, 10 back",note:"Big circles"},{n:"Hip circles",r:"10 each direction",note:"Hands on hips"},{n:"Standing forward fold",r:"Hold 30s",note:"Knees soft, let head hang"},{n:"Calf raises",r:"10",note:"On the edge of a step if you have one"}]},
+  { id:"low-10-home", energy:"low", time:"10", location:"home", title:"Low-Energy Pilates", subtitle:"All on the floor", tag:"🤸 Pilates", color:"#FF6B9D", type:"pilates", youtubeId:"sTANio_2E0Q",
+    moves:[{n:"Dead bug",r:"10 each side",note:"Lower back pressed flat, slow"},{n:"Glute bridges",r:"15 reps",note:"Squeeze at the top, hold 1 sec"},{n:"Clam shells",r:"15 each side",note:"On your side, keep hips stacked"},{n:"Bird dog",r:"10 each side",note:"Opposite arm + leg, stay slow"},{n:"Cat-cow",r:"10 reps",note:"Breathe with every move"}]},
+  { id:"low-20-home", energy:"low", time:"20", location:"home", title:"Gentle Full Body", subtitle:"Low impact, no jumping", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Squats",r:"3 × 12",note:"Slow down, 2 sec pause at bottom"},{n:"Wall push-ups",r:"3 × 10",note:"Hands wide, chest to wall"},{n:"Glute bridges",r:"3 × 15",note:"Squeeze hard at top"},{n:"Reverse lunges",r:"3 × 10 each leg",note:"Back knee hovers off floor"},{n:"Shoulder press (water bottles ok)",r:"3 × 10",note:"Sitting on the couch counts"}]},
+  { id:"low-45-home", energy:"low", time:"45", location:"home", title:"Low-Impact Strength", subtitle:"Real workout. Zero jumping.", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Bodyweight squats",r:"4 × 15",note:"Warm up first 2 sets"},{n:"Push-ups (knee or full)",r:"4 × 10",note:"Chest to floor"},{n:"Romanian deadlift",r:"3 × 12",note:"Hinge at hips, soft knees"},{n:"Dumbbell rows",r:"3 × 12 each",note:"Elbow pulls back to hip"},{n:"Lateral lunges",r:"3 × 10 each",note:"Sit into the stepping leg"},{n:"Plank hold",r:"3 × 30s",note:"Build to 45s over time"},{n:"Glute bridges",r:"3 × 20",note:"Slow and controlled"}]},
+
+  // LOW + OUTSIDE
+  { id:"low-5-outside", energy:"low", time:"5", location:"outside", title:"Doorstep Stretch", subtitle:"Literally just outside the door", tag:"🌸 Stretching", color:"#FF6B9D", type:"stretch", youtubeId:null,
+    moves:[{n:"Calf stretch on front step",r:"1 min each",note:"Heel hanging off edge"},{n:"Standing hip flexor stretch",r:"1 min each",note:"Step forward, sink hips"},{n:"Shoulder cross-body stretch",r:"30s each",note:"Pull arm across chest"}]},
+  { id:"low-10-outside", energy:"low", time:"10", location:"outside", title:"Easy Walk + Podcast", subtitle:"The sneaky self-care move", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Put on a podcast or playlist",r:null,note:"Something you actually enjoy"},{n:"Walk at a comfortable pace",r:"10 min",note:"No route. Just go."}]},
+  { id:"low-20-outside", energy:"low", time:"20", location:"outside", title:"20-Min Neighbourhood Walk", subtitle:"Fresh air is medicine", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Walk a comfortable loop",r:"20 min",note:"Flat is fine. Hills are bonus."}]},
+  { id:"low-45-outside", energy:"low", time:"45", location:"outside", title:"Long Easy Walk", subtitle:"Active recovery", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Walk your favourite route",r:"45 min",note:"Comfortable pace. Not a race."}]},
+
+  // LOW + GYM
+  { id:"low-5-gym", energy:"low", time:"5", location:"gym", title:"Mum Neck & Shoulder Relief", subtitle:"For the hunching and carrying", tag:"🌸 Stretching", color:"#FF6B9D", type:"stretch", youtubeId:"RqcOCBb4arc",
+    moves:[{n:"Neck side stretch",r:"1 min each side",note:"Ear to shoulder, no forcing"},{n:"Chest opener at squat rack",r:"1 min",note:"Hold bar behind you, open chest forward"},{n:"Shoulder cross-body stretch",r:"30s each",note:"Gently pull arm across"}]},
+  { id:"low-10-gym", energy:"low", time:"10", location:"gym", title:"Easy Machine Cardio", subtitle:"Just get the blood moving", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Rower — easy pace",r:"5 min",note:"Legs drive first, then pull"},{n:"Bike — comfortable resistance",r:"5 min",note:"No burning needed today"}]},
+  { id:"low-20-gym", energy:"low", time:"20", location:"gym", title:"Easy Machine Circuit", subtitle:"Show up + go slow", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Rower",r:"5 min easy",note:"Warm up the whole body"},{n:"Leg press — light weight",r:"3 × 12",note:"Full range, slow return"},{n:"Lat pulldown — light",r:"3 × 10",note:"Full stretch at top"},{n:"Stationary bike",r:"5 min easy",note:"Cool down, no pushing"}]},
+  { id:"low-45-gym", energy:"low", time:"45", location:"gym", title:"Guided Stretch Session", subtitle:"Use the space, take your time", tag:"🌸 Stretching", color:"#FF6B9D", type:"stretch", youtubeId:null,
+    moves:[{n:"Foam roll — full body",r:"10 min",note:"Back, glutes, quads, IT band"},{n:"Hip flexor stretch",r:"3 min each side",note:"Low lunge, hold and breathe"},{n:"Pigeon pose on mat",r:"3 min each side",note:"Use a mat edge to support"},{n:"Seated hamstring stretch",r:"2 min each side",note:"Strap or towel works great"},{n:"Lat stretch at rack",r:"2 min each side",note:"Hips back, arm long"},{n:"Child's pose",r:"5 min",note:"You're done. Rest here."}]},
+
+  // MEDIUM + HOME
+  { id:"med-5-home", energy:"medium", time:"5", location:"home", title:"5-Min Energiser", subtitle:"Get the blood pumping", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Star jumps",r:"20",note:"Low-impact option: step side to side"},{n:"Squats",r:"15",note:"Fast pace"},{n:"High knees",r:"20 each leg",note:"Drive knees up"},{n:"Push-ups",r:"10",note:"Knee push-ups totally fine"},{n:"Hip circles",r:"10 each way",note:"Wind it down"}]},
+  { id:"med-10-home", energy:"medium", time:"10", location:"home", title:"10-Min Pilates Core", subtitle:"Deep core activation", tag:"🤸 Pilates", color:"#FF6B9D", type:"pilates", youtubeId:"UItWltVZZmE",
+    moves:[{n:"The Hundred",r:"100 pumps",note:"Legs at tabletop or 45°, pump arms"},{n:"Single leg stretch",r:"10 each side",note:"Curl up, switch legs"},{n:"Double leg lower",r:"10 reps",note:"Keep low back pressed flat"},{n:"Criss-cross",r:"10 each side",note:"Elbow to opposite knee, slow"},{n:"Plank hold",r:"30–45 sec",note:"Belly button pulled in"}]},
+  { id:"med-20-home", energy:"medium", time:"20", location:"home", title:"Mum HIIT — No Jumping", subtitle:"Real results, no crashing the ceiling", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Squats",r:"3 × 15",note:"Sit back into heels"},{n:"Push-ups",r:"3 × 10",note:"Full or knee, keep core tight"},{n:"Reverse lunges",r:"3 × 12 each leg",note:"Step back, lower knee"},{n:"Bent-over dumbbell row",r:"3 × 12 each",note:"Back flat, elbow drives back"},{n:"Glute bridges",r:"3 × 20",note:"Feet flat, squeeze the top"},{n:"Mountain climbers (slow)",r:"3 × 20 each leg",note:"Hips low, core on"}]},
+  { id:"med-45-home", energy:"medium", time:"45", location:"home", title:"Full Body Strength", subtitle:"Proper workout. Proper sweat.", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Warm-up: jog on spot + hip circles",r:"2 min",note:null},{n:"Goblet squat",r:"4 × 12",note:"Chest up, knees out"},{n:"Push-ups",r:"4 × 12",note:"Chest to floor"},{n:"Romanian deadlift",r:"4 × 10",note:"Hinge hips back"},{n:"Single arm row",r:"4 × 10 each",note:"Brace on a chair"},{n:"Lateral lunges",r:"3 × 10 each",note:"Push hips back on working leg"},{n:"Tricep dips on chair",r:"3 × 12",note:"Keep back close to chair"},{n:"Plank",r:"3 × 45s",note:"Build to 60 seconds"}]},
+
+  // MEDIUM + OUTSIDE
+  { id:"med-5-outside", energy:"medium", time:"5", location:"outside", title:"Outdoor Energiser", subtitle:"Use the footpath", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Walk briskly to end of street",r:null,note:"Arms pumping"},{n:"Step-ups on a kerb or step",r:"10 each leg",note:"Or use a park bench"},{n:"Incline push-ups on bench",r:"10",note:"Hands on bench, feet back"},{n:"Walk back home — fast",r:null,note:"Try to beat your time out"}]},
+  { id:"med-10-outside", energy:"medium", time:"10", location:"outside", title:"Outdoor Mobility", subtitle:"At a park bench or steps", tag:"🔄 Mobility", color:"#6C8EBF", type:"mobility", youtubeId:null,
+    moves:[{n:"Hip flexor stretch",r:"90s each side",note:"Sink hips toward ground"},{n:"Hamstring stretch on bench",r:"90s each side",note:"Leg on bench, reach toward foot"},{n:"Thoracic rotation",r:"10 each side",note:"Sit, hands behind head, rotate"},{n:"Calf raises on step edge",r:"20",note:"Heels drop then rise"}]},
+  { id:"med-20-outside", energy:"medium", time:"20", location:"outside", title:"Brisk Walk + Intervals", subtitle:"Walk fast, walk slow", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Warm-up walk",r:"3 min",note:"Normal pace"},{n:"Brisk walk",r:"2 min",note:"Push the pace, arms moving"},{n:"Normal pace (recover)",r:"1 min",note:null},{n:"Repeat brisk/easy",r:"4 more rounds",note:"You'll feel it"},{n:"Cool-down walk",r:"3 min",note:"Breathe it out"}]},
+  { id:"med-45-outside", energy:"medium", time:"45", location:"outside", title:"Run/Walk Intervals", subtitle:"Build your engine", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Warm-up walk",r:"5 min",note:"Easy pace, stretch as you go"},{n:"Run 1 min / Walk 2 min",r:"×10 rounds",note:"No shame in the walk portion"},{n:"Cool-down walk",r:"5 min",note:"Shake out legs, breathe"}]},
+
+  // MEDIUM + GYM
+  { id:"med-5-gym", energy:"medium", time:"5", location:"gym", title:"Pre-Workout Mobility", subtitle:"Unlock before you lift", tag:"🔄 Mobility", color:"#6C8EBF", type:"mobility", youtubeId:"FSSDLDhbacc",
+    moves:[{n:"Hip circles",r:"10 each way",note:"Hands on hips, big loops"},{n:"World's greatest stretch",r:"5 each side",note:"Lunge → elbow to ground → reach up"},{n:"Band pull-aparts",r:"2 × 15",note:"Shoulder prep"},{n:"Bodyweight squats",r:"15",note:"Full depth, take your time"}]},
+  { id:"med-10-gym", energy:"medium", time:"10", location:"gym", title:"10-Min Weights Circuit", subtitle:"Short and effective", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Goblet squat",r:"3 × 10",note:"Moderate weight"},{n:"Dumbbell press",r:"3 × 10",note:"Full range of motion"},{n:"Bent-over row",r:"3 × 10",note:"Hinge forward, pull to hip"}]},
+  { id:"med-20-gym", energy:"medium", time:"20", location:"gym", title:"20-Min Full Body Circuit", subtitle:"4 exercises, 4 rounds", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Goblet squat",r:"4 × 12",note:"Dumbbell or kettlebell"},{n:"Dumbbell press",r:"4 × 10",note:"On bench or floor"},{n:"Dumbbell bent row",r:"4 × 10 each",note:"Brace on bench"},{n:"Reverse lunge",r:"4 × 10 each",note:"Dumbbells at side"}]},
+  { id:"med-45-gym", energy:"medium", time:"45", location:"gym", title:"Push/Pull Split", subtitle:"Chest, back, arms", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Warm-up: rower",r:"5 min easy",note:null},{n:"Bench press or dumbbell press",r:"4 × 10",note:"Progressive weight"},{n:"Lat pulldown",r:"4 × 10",note:"Full stretch at top"},{n:"Cable chest fly or pec deck",r:"3 × 12",note:"Slow squeeze at centre"},{n:"Seated cable row",r:"3 × 12",note:"Elbows back, shoulders down"},{n:"Dumbbell bicep curl",r:"3 × 12",note:"Supinate at top"},{n:"Tricep pushdown",r:"3 × 12",note:"Elbows locked at side"}]},
+
+  // HIGH + HOME
+  { id:"high-5-home", energy:"high", time:"5", location:"home", title:"5-Min Dance Party", subtitle:"One song. GO.", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Put on YOUR song",r:null,note:"You know the one"},{n:"Dance like no one is watching",r:"Until it ends",note:"Arms, hips, full send"},{n:"One more song for good measure",r:null,note:"Optional. But you will."}]},
+  { id:"high-10-home", energy:"high", time:"10", location:"home", title:"10-Min Tabata Burner", subtitle:"20s on, 10s off — go hard", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:"7kgZnJqzB40",
+    moves:[{n:"Jump squats",r:"20s on / 10s off × 2",note:"Land soft, drive through heels"},{n:"Push-ups",r:"20s on / 10s off × 2",note:"As many as you can"},{n:"Mountain climbers",r:"20s on / 10s off × 2",note:"Hips low, core tight"},{n:"Burpees or squat thrusts",r:"20s on / 10s off × 2",note:"Full send"}]},
+  { id:"high-20-home", energy:"high", time:"20", location:"home", title:"Power Pilates", subtitle:"Pilates with a bite", tag:"🤸 Pilates", color:"#FF6B9D", type:"pilates", youtubeId:"LnLEOg5yB-k",
+    moves:[{n:"The Hundred",r:"100 pumps",note:"Legs low and long"},{n:"Rollup",r:"10 reps",note:"Articulate every vertebra"},{n:"Double leg stretch",r:"10 reps",note:"Reach long, then hug in"},{n:"Scissors",r:"10 each side",note:"Curl up high, switch legs"},{n:"Teaser",r:"5 reps",note:"Or boat pose hold"},{n:"Side kick series",r:"10 each side",note:"Hips stacked"},{n:"Swimming",r:"30 sec",note:"Opposite arm/leg, flutter fast"}]},
+  { id:"high-45-home", energy:"high", time:"45", location:"home", title:"Full Power Home Workout", subtitle:"Strong, sweaty, unstoppable", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Warm-up: jog + arm circles + hip circles",r:"3 min",note:null},{n:"Jump squats",r:"4 × 15",note:"Explode up, land soft"},{n:"Push-ups",r:"4 × 15",note:"Full or advanced: feet on chair"},{n:"Bulgarian split squat",r:"4 × 12 each",note:"Back foot on chair"},{n:"Dumbbell rows",r:"4 × 12 each",note:"Brace on chair, pull to hip"},{n:"Glute bridge with march",r:"3 × 15 each",note:"Lift one foot, hold bridge"},{n:"Mountain climbers",r:"3 × 30 each leg",note:"Fast"},{n:"Plank shoulder taps",r:"3 × 20",note:"Hips still, tap opposite shoulder"}]},
+
+  // HIGH + OUTSIDE
+  { id:"high-5-outside", energy:"high", time:"5", location:"outside", title:"Stair or Hill Sprints", subtitle:"Short, brutal, effective", tag:"🌿 Mum Survival", color:"#4CAF82", type:"strength", youtubeId:null,
+    moves:[{n:"Sprint up stairs or hill",r:"×5",note:"All out effort up"},{n:"Walk down slowly",r:"×5",note:"Catch breath on the way down"}]},
+  { id:"high-10-outside", energy:"high", time:"10", location:"outside", title:"Sprint Intervals", subtitle:"30 sec sprint, 90 sec walk", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Sprint 30 seconds",r:"×5",note:"All out effort — feel it"},{n:"Walk 90 seconds",r:"×5",note:"Full recovery between sprints"}]},
+  { id:"high-20-outside", energy:"high", time:"20", location:"outside", title:"Run — Just Run", subtitle:"Pick a pace and hold it", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Warm-up jog",r:"2 min easy",note:null},{n:"Steady run",r:"15 min",note:"You can talk but barely"},{n:"Cool-down walk",r:"3 min",note:"Shake legs out"}]},
+  { id:"high-45-outside", energy:"high", time:"45", location:"outside", title:"Trail Walk or Hike", subtitle:"Get off the footpath", tag:"🚶 Walking", color:"#FF8C42", type:"walk", youtubeId:null,
+    moves:[{n:"Find a trail or hilly route",r:null,note:"Incline = bonus resistance"},{n:"Walk strong pace",r:"45 min",note:"Arms pumping, breathe deep"}]},
+
+  // HIGH + GYM
+  { id:"high-5-gym", energy:"high", time:"5", location:"gym", title:"Barbell Warm-Up Complex", subtitle:"Prime everything fast", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Barbell good morning",r:"10",note:"Empty bar, hinge back"},{n:"Barbell front squat",r:"10",note:"Elbows high"},{n:"Barbell overhead press",r:"10",note:"Core tight"},{n:"Barbell bent row",r:"10",note:"Back flat"}]},
+  { id:"high-10-gym", energy:"high", time:"10", location:"gym", title:"Power Cardio Burst", subtitle:"10 min, max effort", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Assault bike or rower",r:"10 min",note:"1 min hard, 1 min easy × 5"}]},
+  { id:"high-20-gym", energy:"high", time:"20", location:"gym", title:"Metabolic Conditioning", subtitle:"Short rest, high effort", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Kettlebell swings",r:"4 × 20",note:"Hip hinge, not a squat"},{n:"Box jumps or step-ups",r:"4 × 10",note:"Land soft, step down"},{n:"Goblet squat",r:"4 × 10",note:"Heavy-ish"},{n:"Dumbbell push press",r:"4 × 10",note:"Dip then drive"}]},
+  { id:"high-45-gym", energy:"high", time:"45", location:"gym", title:"Leg Day — Full Send", subtitle:"Squats, deadlifts, lunges. Own it.", tag:"💪 Strength", color:"#C94B8A", type:"strength", youtubeId:null,
+    moves:[{n:"Warm-up: rower",r:"5 min",note:null},{n:"Barbell back squat",r:"5 × 5",note:"Heavy — start conservative"},{n:"Romanian deadlift",r:"4 × 8",note:"Slow descent, feel the hamstring"},{n:"Bulgarian split squat",r:"3 × 10 each",note:"Back foot on bench"},{n:"Leg press",r:"3 × 15",note:"Wide for glute emphasis"},{n:"Lying leg curl",r:"3 × 12",note:"Slow and controlled"},{n:"Calf raises on leg press",r:"4 × 20",note:"Full stretch, full rise"}]},
+];
+
+// ─── STATE & STORAGE ──────────────────────────────────────────────────────────
+const STORAGE_KEY = 'mmb_state_v3';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { streak: 0, lastLog: null, favourites: [], history: [] };
+}
+
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+let state = loadState();
+let selections = { energy: null, time: null, location: null };
+let currentWorkout = null;
+let checkedMoves = {};
+
+// ─── PILL CONFIG ─────────────────────────────────────────────────────────────
+const ENERGIES = [
+  { value:"dead", label:"Dead 💀", color:"#9B59B6" },
+  { value:"low",  label:"Low 😴",  color:"#6C8EBF" },
+  { value:"med",  label:"Medium 🙂",color:"#FF8C42" },
+  { value:"high", label:"High ⚡",  color:"#FF6B9D" },
+];
+const TIMES = [
+  { value:"5",  label:"5 mins" },
+  { value:"10", label:"10 mins" },
+  { value:"20", label:"20 mins" },
+  { value:"45", label:"45 mins" },
+];
+const LOCATIONS = [
+  { value:"home",    label:"🏠 Home" },
+  { value:"outside", label:"🌿 Outside" },
+  { value:"gym",     label:"🏋️ Gym" },
+];
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  buildPills('pills-energy', ENERGIES, 'energy', '#FF6B9D');
+  buildPills('pills-time', TIMES, 'time', '#FF6B9D');
+  buildPills('pills-location', LOCATIONS, 'location', '#FF8C42');
+  updateStreak();
+  updateFaveCount();
+}
+
+function buildPills(containerId, items, group, defaultColor) {
+  const c = document.getElementById(containerId);
+  items.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'pill';
+    btn.textContent = item.label;
+    btn.dataset.value = item.value;
+    btn.dataset.group = group;
+    btn.dataset.color = item.color || defaultColor;
+    btn.onclick = () => selectPill(btn, group, item.value, item.color || defaultColor);
+    c.appendChild(btn);
+  });
+}
+
+function selectPill(btn, group, value, color) {
+  // deselect others in group
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(p => {
+    p.classList.remove('selected');
+    p.style.background = '';
+    p.style.borderColor = '';
+    p.style.boxShadow = '';
+  });
+  btn.classList.add('selected');
+  btn.style.background = color;
+  btn.style.borderColor = color;
+  btn.style.boxShadow = `0 4px 18px ${color}55`;
+  selections[group] = value;
+  updateGoButton();
+}
+
+function updateGoButton() {
+  const btn = document.getElementById('btnGo');
+  const ready = selections.energy && selections.time && selections.location;
+  btn.textContent = ready ? '🚀 Tell me what to do' : 'Pick your options above';
+  btn.className = ready ? 'btn-main ready' : 'btn-main';
+}
+
+function updateStreak() {
+  document.getElementById('streakNum').textContent = state.streak;
+}
+
+function updateFaveCount() {
+  document.getElementById('faveCount').textContent = state.favourites.length;
+}
+
+// ─── WORKOUT LOGIC ────────────────────────────────────────────────────────────
+function getWorkout(energy, time, location) {
+  // energy mapping: "med" stored internally but workout ids use "med"
+  const id = `${energy}-${time}-${location}`;
+  return WORKOUTS.find(w => w.id === id)
+    || WORKOUTS.find(w => w.energy === energy && w.time === time)
+    || WORKOUTS[0];
+}
+
+function handleGo() {
+  if (!selections.energy || !selections.time || !selections.location) return;
+  // map pill values to workout ids
+  const eMap = {dead:'dead', low:'low', med:'medium', high:'high'};
+  const energy = eMap[selections.energy] || selections.energy;
+  currentWorkout = getWorkout(energy, selections.time, selections.location);
+  checkedMoves = {};
+  showResult(false);
+}
+
+function handleRandom() {
+  currentWorkout = WORKOUTS[Math.floor(Math.random() * WORKOUTS.length)];
+  checkedMoves = {};
+  showResult(false);
+}
+
+// ─── SCREENS ─────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+  if (tab === 'home') {
+    document.getElementById('screen-home').classList.add('active');
+  } else if (tab === 'faves') {
+    renderFaves();
+    document.getElementById('screen-faves').classList.add('active');
+  } else if (tab === 'result') {
+    document.getElementById('screen-result').classList.add('active');
+  }
+}
+
+function showResult(celebrated) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const rs = document.getElementById('screen-result');
+  rs.classList.add('active');
+  if (celebrated) {
+    renderCelebration();
+  } else {
+    renderWorkoutCard();
+  }
+}
+
+// ─── RENDER WORKOUT CARD ──────────────────────────────────────────────────────
+function renderWorkoutCard() {
+  const w = currentWorkout;
+  const isFaved = state.favourites.includes(w.id);
+  const isYT = ['stretch','nervous','pilates','mobility'].includes(w.type) && w.youtubeId;
+  const total = w.moves.length;
+  const doneCount = Object.values(checkedMoves).filter(Boolean).length;
+  const allDone = doneCount === total;
+  const pct = total ? (doneCount / total) * 100 : 0;
+
+  let movesHTML = w.moves.map((m, i) => {
+    const done = !!checkedMoves[i];
+    return `
+      <button class="move-row" onclick="toggleMove(${i})">
+        <div class="move-check ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+        <div style="flex:1">
+          <div class="move-name ${done ? 'done' : ''}">
+            ${m.n}${m.r ? `<span class="move-reps">${m.r}</span>` : ''}
+          </div>
+          ${m.note ? `<div class="move-note">${m.note}</div>` : ''}
+        </div>
+      </button>`;
+  }).join('');
+
+  let ytHTML = '';
+  if (isYT) {
+    ytHTML = `<button class="yt-btn" id="ytBtn" onclick="openYT('${w.youtubeId}')">▶️ Watch along on YouTube (optional)</button>`;
+  }
+
+  document.getElementById('resultArea').innerHTML = `
+    <p style="color:rgba(245,230,211,0.4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">Your move today</p>
+    <div class="card">
+      <div class="card-tag" style="background:${w.color}28;border:1px solid ${w.color}55;color:${w.color}">${w.tag}</div>
+      <div class="card-title">${w.title}</div>
+      <div class="card-subtitle" style="color:${w.color}">${w.subtitle}</div>
+
+      <div class="progress-meta">
+        <span>Your moves</span>
+        <span id="progressText">${doneCount}/${total} done</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:${pct}%"></div>
+      </div>
+
+      <div class="move-list" id="moveList">${movesHTML}</div>
+
+      ${ytHTML}
+
+      <div class="card-actions">
+        <button class="btn-log ${allDone ? 'ready' : ''}" id="btnLog" onclick="${allDone ? 'logWorkout()' : ''}">
+          ${allDone ? '✅ Log it!' : `${total - doneCount} move${total - doneCount !== 1 ? 's' : ''} to go`}
+        </button>
+        <button class="btn-fave ${isFaved ? 'active' : ''}" id="btnFave" onclick="toggleFave()">
+          ${isFaved ? '💖' : '🤍'}
+        </button>
+      </div>
+    </div>
+    <button class="btn-secondary" onclick="handleRandom()">🎲 Give me a different one</button>
+  `;
+}
+
+function toggleMove(i) {
+  checkedMoves[i] = !checkedMoves[i];
+  // Re-render just the moves + progress (fast)
+  const w = currentWorkout;
+  const total = w.moves.length;
+  const doneCount = Object.values(checkedMoves).filter(Boolean).length;
+  const allDone = doneCount === total;
+  const pct = total ? (doneCount / total) * 100 : 0;
+
+  // update progress
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${doneCount}/${total} done`;
+
+  // update move list
+  document.getElementById('moveList').innerHTML = w.moves.map((m, idx) => {
+    const done = !!checkedMoves[idx];
+    return `
+      <button class="move-row" onclick="toggleMove(${idx})">
+        <div class="move-check ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+        <div style="flex:1">
+          <div class="move-name ${done ? 'done' : ''}">
+            ${m.n}${m.r ? `<span class="move-reps">${m.r}</span>` : ''}
+          </div>
+          ${m.note ? `<div class="move-note">${m.note}</div>` : ''}
+        </div>
+      </button>`;
+  }).join('');
+
+  // update log button
+  const btn = document.getElementById('btnLog');
+  btn.className = `btn-log ${allDone ? 'ready' : ''}`;
+  btn.setAttribute('onclick', allDone ? 'logWorkout()' : '');
+  btn.textContent = allDone ? '✅ Log it!' : `${total - doneCount} move${total - doneCount !== 1 ? 's' : ''} to go`;
+}
+
+function openYT(id) {
+  const container = document.getElementById('ytBtn') || document.querySelector('.yt-btn');
+  if (!container) return;
+  const div = document.createElement('div');
+  div.className = 'yt-embed';
+  div.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  container.replaceWith(div);
+}
+
+function toggleFave() {
+  const id = currentWorkout.id;
+  const idx = state.favourites.indexOf(id);
+  if (idx >= 0) {
+    state.favourites.splice(idx, 1);
+    showToast('Removed from saved 🤍');
+  } else {
+    state.favourites.push(id);
+    showToast('Saved! 💖');
+  }
+  saveState(state);
+  updateFaveCount();
+  const btn = document.getElementById('btnFave');
+  const isFaved = state.favourites.includes(id);
+  btn.className = `btn-fave ${isFaved ? 'active' : ''}`;
+  btn.textContent = isFaved ? '💖' : '🤍';
+}
+
+function logWorkout() {
+  const today = new Date().toDateString();
+  if (state.lastLog !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    state.streak = state.lastLog === yesterday ? state.streak + 1 : 1;
+    state.lastLog = today;
+  }
+  // add to history
+  state.history = state.history || [];
+  state.history.unshift({ id: currentWorkout.id, title: currentWorkout.title, date: today });
+  if (state.history.length > 30) state.history = state.history.slice(0, 30);
+  saveState(state);
+  updateStreak();
+  showResult(true);
+}
+
+function renderCelebration() {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="celebration">
+      <div class="celebration-emoji">🔥</div>
+      <div class="celebration-title">You did it!</div>
+      <div class="celebration-streak">🔥 ${state.streak} day streak</div>
+      <div class="celebration-note">Moving your body is the most loving thing you can do for yourself.</div>
+      <button class="btn-again" onclick="resetHome()">💪 Move again tomorrow</button>
+    </div>
+  `;
+}
+
+function resetHome() {
+  selections = { energy: null, time: null, location: null };
+  document.querySelectorAll('.pill').forEach(p => {
+    p.classList.remove('selected');
+    p.style.background = '';
+    p.style.borderColor = '';
+    p.style.boxShadow = '';
+  });
+  updateGoButton();
+  switchTab('home');
+}
+
+// ─── FAVOURITES ───────────────────────────────────────────────────────────────
+function renderFaves() {
+  const area = document.getElementById('favesArea');
+  const faved = WORKOUTS.filter(w => state.favourites.includes(w.id));
+
+  if (faved.length === 0) {
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-emoji">🤍</div>
+        <div class="empty-text">Tap 🤍 on any workout to save it here for quick access.</div>
+      </div>`;
+    return;
+  }
+
+  area.innerHTML = `<div class="fave-list">${faved.map(w => `
+    <div class="fave-card" onclick="openFave('${w.id}')">
+      <div>
+        <div class="fave-tag" style="color:${w.color}">${w.tag}</div>
+        <div class="fave-title">${w.title}</div>
+        <div class="fave-meta">${w.moves.length} moves · ${w.time} min</div>
+      </div>
+      <button class="fave-remove" onclick="removeFaveCard(event,'${w.id}')">💖</button>
+    </div>`).join('')}
+  </div>`;
+}
+
+function openFave(id) {
+  currentWorkout = WORKOUTS.find(w => w.id === id);
+  checkedMoves = {};
+  showResult(false);
+}
+
+function removeFaveCard(e, id) {
+  e.stopPropagation();
+  const idx = state.favourites.indexOf(id);
+  if (idx >= 0) state.favourites.splice(idx, 1);
+  saveState(state);
+  updateFaveCount();
+  renderFaves();
+  showToast('Removed from saved 🤍');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── GO ───────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
